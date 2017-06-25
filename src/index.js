@@ -9,21 +9,21 @@ class App extends React.Component {
         this.state = {
             tweets : []
         }
-        this.cnt = 0
     }
 
     componentDidMount() {
         this.socket = io()
         this.socket.on('message', (tweet) => {
-            this.cnt += 1
-            console.log('server emitted a message ', this.cnt)
-            if (this.state.tweets.length < 10) {
+            if (this.state.tweets.length < 15) {
                 this.setState({
-                    tweets : [tweet.tweet, ...this.state.tweets]
+                    tweets : [tweet, ...this.state.tweets]
                 })
             }else {
+                var new_tweets = this.state.tweets
+                new_tweets.splice(9, 5)
+                console.log(new_tweets.length)
                 this.setState({
-                    tweets : [tweet.tweet]
+                    tweets : [tweet, ...new_tweets]
                 })
             }
         })
@@ -31,7 +31,10 @@ class App extends React.Component {
 
     render() {
         let tweets = this.state.tweets.map((tweet, ind) => {
-            return <div key={ind} className="card-panel teal lighten-2">{tweet}</div>
+            console.log(tweet.sentiment)
+            let clr = tweet.sentiment === '0' ? "card-panel red lighten-2" : "card-panel teal lighten-2"
+            console.log(clr)
+            return <div key={ind} className={clr}>{tweet.tweet}</div>
         })
         return(
             <div className="container">

@@ -6,7 +6,7 @@ const webpack = require('webpack')
 const webpackDevMiddleWare = require('webpack-dev-middleware')
 const path = require('path')
 const webpackConfig = require('./webpack.config.js')
-
+const axios = require('axios')
 const Twit = require('twit')
 const config = require('./config')
 const app = express()
@@ -23,14 +23,25 @@ app.use(bodyParser.urlencoded({
 
 var T = new Twit(config)
 var stream = T.stream('statuses/filter', {
-    track: 'python'
+    track: 'india'
 })
 io.on('connection', socket => {
     console.log("someone connected...")
 })
 stream.on('tweet', (tweet) => {
-    console.log(tweet.text)
-    io.emit('message', {'tweet' : tweet.text})
+    axios.post('http://localhost:5000', {
+            text : tweet.text
+        })
+        .then((res) => {
+            io.emit('message', {
+                'tweet': tweet.text,
+                'sentiment': res.data.sentiment
+            })
+        })
+        .catch((error) => {
+            console.log('axios error')
+            console.log(error)
+        })
 })
 server.listen(3000, '0.0.0.0', () => {
     console.log('server running ......')
