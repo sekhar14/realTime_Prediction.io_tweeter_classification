@@ -21,21 +21,39 @@ app.use(bodyParser.urlencoded({
     extended: false
 }))
 
+var track_topic = 'kashmir'
 var T = new Twit(config)
 var stream = T.stream('statuses/filter', {
-    track: 'india'
+    track: track_topic
 })
+
+var positive = 0
+var negative = 0
+
 io.on('connection', socket => {
     console.log("someone connected...")
+    socket.on('disconnect', () => {
+        console.log("someone disconnected")
+    })
 })
 stream.on('tweet', (tweet) => {
     axios.post('http://localhost:5000', {
             text : tweet.text
         })
         .then((res) => {
+            if (res.data.sentiment === '0') {
+                negative += 1
+            }else {
+                positive += 1
+            }
             io.emit('message', {
+                'topic': track_topic, 
                 'tweet': tweet.text,
                 'sentiment': res.data.sentiment
+            })
+            io.emit('change', {
+                positive,
+                negative
             })
         })
         .catch((error) => {

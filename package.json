@@ -25,6 +25,7 @@
     "socket.io": "^2.0.2",
     "twit": "^2.2.9",
     "twitter": "^1.7.1",
+    "victory": "^0.21.0",
     "webpack": "^2.6.1",
     "webpack-dev-middleware": "^1.10.2"
   }

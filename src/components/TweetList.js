@@ -1,5 +1,4 @@
 import React from 'react'
-import axios from 'axios'
 import io from 'socket.io-client'
 
 class TweetList extends React.Component {
@@ -8,10 +7,11 @@ class TweetList extends React.Component {
         this.state = {
             tweets : []
         }
+        this.socket = null
     }
 
     componentDidMount() {
-        this.socket = io()
+        this.socket = io.connect({'forceNew' : true})
         this.socket.on('message', (tweet) => {
             if (this.state.tweets.length < 15) {
                 this.setState({
@@ -20,19 +20,18 @@ class TweetList extends React.Component {
             }else {
                 var new_tweets = this.state.tweets
                 new_tweets.splice(9, 5)
-                console.log(new_tweets.length)
                 this.setState({
                     tweets : [tweet, ...new_tweets]
                 })
             }
         })
     }
-
+    componentWillUnmount() {
+        this.socket.disconnect()
+    }
     render() {
         let tweets = this.state.tweets.map((tweet, ind) => {
-            console.log(tweet.sentiment)
             let clr = tweet.sentiment === '0' ? "card-panel red lighten-2" : "card-panel teal lighten-2"
-            console.log(clr)
             return <div key={ind} className={clr}>{tweet.tweet}</div>
         })
         return(
