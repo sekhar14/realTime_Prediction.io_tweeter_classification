@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Sekhar Banarjee",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.16.2",
@@ -21,6 +21,7 @@
     "mongoose": "^4.11.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "react-router": "2.x",
     "socket.io": "^2.0.2",
     "twit": "^2.2.9",
     "twitter": "^1.7.1",
